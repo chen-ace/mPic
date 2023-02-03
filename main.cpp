@@ -39,10 +39,9 @@ void init(){
     p1 /= "/mPic";
     if (!exists(p1))
     {
-        boost::system::error_code ec;
-        create_directories(p1,  ec);
-        if(ec.failed()){
-            cerr<<"配置创建错误，请检查权限，错误信息 : "<<ec.message()<<endl;
+        auto status = create_directories(p1);
+        if(!status){
+            cerr<<"配置创建错误，请检查权限、磁盘剩余空间等"<<endl;
         }
     }
     p1 /= "/config.json";

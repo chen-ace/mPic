@@ -32,7 +32,6 @@
 ## 开发者指南
 
 ### 下载源码
-
 ```shell
 git clone https://github.com/chen-ace/mPic.git
 cd mPic
@@ -40,11 +39,14 @@ git submodule init
 ```
 
 ### 安装依赖
-
+#### macos
 ```shell
 brew install openssl curl boost
 ```
-
+#### RedHat
+```shell
+yum install git cmake make llvm clang openssl3-devel boost-devel libcurl-devel
+```
 ### 编译
 
 ```shell
