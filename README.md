@@ -45,7 +45,7 @@ brew install openssl curl boost
 ```
 #### RedHat
 ```shell
-yum install git cmake make llvm clang openssl3-devel boost-devel libcurl-devel
+yum install git cmake make llvm clang openssl-devel boost-devel libcurl-devel zlib-devel
 ```
 ### 编译
 

@@ -60,7 +60,7 @@ void init(){
         format fmt(CONFIG_TPL);
         fmt %endpoint %key_id %key_secret %bucket_name;
         string config_str = fmt.str();
-        ofstream ofs(p1.c_str());
+        std::ofstream ofs(p1.c_str());
         ofs<<config_str;
         ofs.close();
         cout<<"配置文件写入成功！ 配置文件路径为： "<< p1<<endl;
