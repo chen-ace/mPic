@@ -1,0 +1,6 @@
+[submodule "contribs/simdjson"]
+	path = contribs/simdjson
+	url = https://github.com/simdjson/simdjson.git
+[submodule "contribs/aliyun-oss-cpp-sdk"]
+	path = contribs/aliyun-oss-cpp-sdk
+	url = https://github.com/aliyun/aliyun-oss-cpp-sdk.git
