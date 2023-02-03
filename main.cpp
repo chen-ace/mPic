@@ -7,12 +7,14 @@
 #include <boost/uuid/random_generator.hpp>
 #include <boost/uuid/uuid_serialize.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
+#include <fstream>
 
 #include "Config.h"
 
 using namespace std;
 using namespace AlibabaCloud::OSS;
+using namespace boost;
 using namespace boost::program_options;
 using namespace boost::filesystem;
 using namespace boost::uuids;
@@ -22,8 +24,52 @@ unique_ptr<Config> config;
 bool rename_flag = false;
 vector<string> upload_files;
 
+string CONFIG_TPL = R"(
+{
+    "endpoint": "%s",
+    "keyId": "%s",
+    "keySecret": "%s",
+    "bucketName":"%s"
+}
+)";
+
+void init(){
+    auto userHome = std::getenv("HOME");
+    path p1(userHome);
+    p1 /= "/mPic";
+    if (!exists(p1))
+    {
+        boost::system::error_code ec;
+        create_directories(p1,  ec);
+        if(ec.failed()){
+            cerr<<"配置创建错误，请检查权限，错误信息 : "<<ec.message()<<endl;
+        }
+    }
+    p1 /= "/config.json";
+    if(!exists(p1)){
+        string endpoint,key_id,key_secret,bucket_name;
+        cout<<"欢迎使用mPic"<<endl<<"这是您第一次打开程序，需要进行一些配置"<<endl;
+        cout<<"请输入 endpoint:";
+        cin>>endpoint;
+        cout<<"请输入 Key Id:";
+        cin>>key_id;
+        cout<<"请输入 Key Secret:";
+        cin>>key_secret;
+        cout<<"请输入 Bucket Name:";
+        cin>>bucket_name;
+
+        format fmt(CONFIG_TPL);
+        fmt %endpoint %key_id %key_secret %bucket_name;
+        string config_str = fmt.str();
+        ofstream ofs(p1.c_str());
+        ofs<<config_str;
+        ofs.close();
+        cout<<"配置文件写入成功！ 配置文件路径为： "<< p1<<endl;
+    }
+}
+
 void parse_cmd(int argc,char ** argv){
-    options_description opts("PicBridge可用选项");
+    options_description opts("mPic可用选项");
     opts.add_options()
             ("help,h","帮助信息")
             ("endpoint,e",value<string>(),"Endpoint")
@@ -42,20 +88,20 @@ void parse_cmd(int argc,char ** argv){
     if(vm.empty())
     {
         cout<<opts<<endl;
-        return;
+        std::exit(EXIT_SUCCESS);
     }
     if(vm.count("help"))
     {
         cout<<opts<<endl;
-        return;
+        std::exit(EXIT_SUCCESS);
     }
     if(!vm.count("files")){
         cout<<opts<<endl;
-        return;
+        std::exit(EXIT_SUCCESS);
     }
     if(upload_files.empty()){
         cout<<opts<<endl;
-        return;
+        std::exit(EXIT_SUCCESS);
     }
 
     if(vm.count("rename")){
@@ -78,6 +124,7 @@ void parse_cmd(int argc,char ** argv){
 
 
 int main(int argc,char ** argv) {
+    init();
     parse_cmd(argc,argv);
     // Initialize the SDK
     InitializeSdk();
