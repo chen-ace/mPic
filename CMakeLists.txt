@@ -36,3 +36,7 @@ add_executable(mPic main.cpp Config.cpp Config.h)
 
 target_link_libraries(mPic ${OPENSSL_LIBRARIES} cpp-sdk
         ${CURL_LIBRARIES} ${Boost_LIBRARIES} contrib::simdjson)
+
+install(TARGETS mPic
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        )
